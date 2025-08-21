@@ -1,0 +1,7 @@
+CREATE USER 'Abhishek'@'172.21.4.161' IDENTIFIED BY 'abhi';
+CREATE DATABASE retailSales;
+USE retailSales;
+GRANT ALL PRIVILEGES ON retailSales.* TO 'Abhishek'@'172.21.4.161';
+
+FLUSH PRIVILEGES;
+
