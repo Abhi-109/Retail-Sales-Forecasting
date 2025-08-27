@@ -36,3 +36,44 @@ WHERE region IS NULL;
 
 UPDATE Orders SET region = 'Canada'
 WHERE region IS NULL;
+
+SELECT SUBSTRING_INDEX(product_name,',' ,1) AS product,
+	    TRIM(SUBSTRING_INDEX(product_name,',',-1)) AS product_features
+FROM Orders; -- product name column have features combine it
+
+
+ALTER TABLE Orders
+ADD COLUMN product_features VARCHAR(150) AFTER product_name,
+ADD COLUMN products VARCHAR(150) AFTER product_name;
+
+UPDATE Orders
+SET products=SUBSTRING_INDEX(product_name,',' ,1),
+    product_features=TRIM(SUBSTRING_INDEX(product_name,',',-1)) ;
+
+ALTER TABLE Orders
+DROP COLUMN product_name;
+
+ALTER TABLE Orders
+RENAME COLUMN products TO product_name;
+
+-- we had a column called product name which had both name of the product  and feature of  that product so we split it that column into two parts as product name and product feature 
+SELECT ROUND(((sales/quantity)-shipping_cost),3) AS price ,sales,quantity
+FROM Orders;
+
+SELECT ROUND((sales-profit),3) AS product_cost,sales,profit
+FROM Orders;
+
+ALTER TABLE Orders
+	ADD COLUMN price decimal(10,3) AFTER product_features,
+	ADD COLUMN product_cost decimal(10,3) AFTER sales,
+	ADD COLUMN days_delayed INT,
+	ADD COLUMN gross_margin DECIMAL(10,3);
+    
+UPDATE Orders
+	SET 
+		price=ROUND(((sales/quantity)-shipping_cost),3),
+    	product_cost =ROUND((sales-profit),3),
+		days_delayed=ship_date-order_date,
+	 	gross_margin =ROUND(((sales-product_cost)/sales) * 100,3);
+    
+
