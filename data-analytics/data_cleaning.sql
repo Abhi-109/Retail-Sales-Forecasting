@@ -65,26 +65,15 @@ FROM Orders;
 
 ALTER TABLE Orders
 	ADD COLUMN price decimal(10,3) AFTER product_features,
-	ADD COLUMN product_cost decimal(10,3) AFTER sales;
+	ADD COLUMN product_cost decimal(10,3) AFTER sales,
+	ADD COLUMN days_delayed INT,
+	ADD COLUMN gross_margin DECIMAL(10,3);
     
 UPDATE Orders
-	SET price=ROUND(((sales/quantity)-shipping_cost),3),
-    product_cost =ROUND((sales-profit),3);
+	SET 
+		price=ROUND(((sales/quantity)-shipping_cost),3),
+    	product_cost =ROUND((sales-profit),3),
+		days_delayed=ship_date-order_date,
+	 	gross_margin =ROUND(((sales-product_cost)/sales) * 100,3);
     
-SELECT (ship_date-order_date) 
-FROM Orders;
 
-ALTER TABLE Orders
-ADD COLUMN days_delayed INT;
-
-UPDATE Orders
-	SET days_delayed=ship_date-order_date;
-    
-SELECT ((sales-product_cost)/sales) * 100
-FROM Orders;
-
-ALTER TABLE Orders
-ADD COLUMN gross_margin DECIMAL(10,3);
-
-UPDATE Orders
-SET gross_margin =ROUND(((sales-product_cost)/sales) * 100,3)
